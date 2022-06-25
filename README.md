@@ -4,7 +4,6 @@ The assignments that I completed during Appworks School first-four-week remote c
 The following was the course outlines. 
 
 【6/6 - 6/17】
-
 HTML Basics
 CSS Basics
 CSS Selectors Quickstart
@@ -26,7 +25,7 @@ Interacting with the DOM
 【6/20 - 6/26】
 Node.js Basics 
 Npm Basics 
-Express Basics  (註)
+Express Basics  
 Ajax Basics
 
 
