@@ -1,0 +1,36 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalculateSum</title>
+</head>
+
+<body>
+    <h1> Here helps you calculate the sum from <i>0</i> to <i>N</i> </h1>
+    <h2> Given a positive integer <i>N</i>, what is the sum from <i> 0 + 1 + ... + N</i> ?</h2>
+
+    <input type="text" placeholder="Integer" id="number">
+    <button type="button" onclick="getInputValue();">Enter</button>
+    <h1 id="result"> </h1>
+
+    <script>
+        function getInputValue() {
+            // Selecting the input element and get its value 
+            var num = document.getElementById("number").value;
+            // Displaying the value
+            const req = new XMLHttpRequest();
+
+            req.onload = function () {
+                console.log(this.responseText);
+                const res = document.getElementById("result");
+                res.innerText = "Answer: " + this.responseText;
+            };
+        
+            req.open("GET", `data?number=${num}`);
+            req.send();
+        }
+    </script>
+
+</html>
