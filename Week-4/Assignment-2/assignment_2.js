@@ -1,5 +1,3 @@
-const src = 'https://appworks-school.github.io/Remote-Aassigiment-Data/products'
-
 function ajax(src, callback) {
     const xhr = new XMLHttpRequest();
     xhr.open("Get", src);
@@ -13,16 +11,14 @@ function ajax(src, callback) {
 }
 
 function render(data) {
-    // your code here
-    // document.createElement() and appendChild() methods are preferred.
-    for (i = 0; i < data.length; i++) {
+    for (item of data) {
         const para = document.createElement("p");
-        para.innerText = data[i].name + data[i].price + data[i].description;
+        para.innerText = item.name + ": " + "價格 " + item.price + " ; 特點: " + item.description;
         document.body.appendChild(para);
     }
 }
 
-ajax(src,
+ajax('https://appworks-school.github.io/Remote-Aassigiment-Data/products',
     (response) => {
         render(response);
     }
