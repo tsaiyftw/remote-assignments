@@ -12,7 +12,6 @@ const DB_DATABASE = process.env.DB_DATABASE
 const DB_PORT = process.env.DB_PORT
 
 const db = mysql.createConnection({
-    // connectionLimit: 100,
     host: DB_HOST,
     user: DB_USER,
     password: DB_PASSWORD,
