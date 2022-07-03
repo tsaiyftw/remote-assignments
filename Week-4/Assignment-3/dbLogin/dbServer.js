@@ -29,6 +29,11 @@ app.listen(port, () => {
     console.log(`Server Started on port ${port}...`)
 });
 
+
+app.get('/', (req, res) => {
+    res.redirect("home.html")
+});
+
 app.get('/member', (req, res) => {
     res.render("member.ejs")
 });
