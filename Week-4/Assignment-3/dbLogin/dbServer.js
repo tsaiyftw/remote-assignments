@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require("body-parser")
 app.use(bodyParser.urlencoded({ extended: false }))
 app.set("view-engine", "ejs")
+app.use(express.static('public'))
 
 const mysql = require("mysql2");
 
@@ -28,25 +29,17 @@ app.listen(port, () => {
     console.log(`Server Started on port ${port}...`)
 });
 
-app.get("/", (req, res) => {
-    res.render("index.ejs", { email: req.body.email })
+app.get('/member', (req, res) => {
+    res.render("member.ejs")
 });
 
-app.get("/home", (req, res) => {
-    res.render("home.ejs")
-});
-
-app.post("/sign_up", (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-    console.log(req.body);
-
+app.post('/sign_up', (req, res) => {
+    const { email, password } = req.body;
     db.connect((err) => {
         if (err) throw err;
-        console.log("Sign_up Connected!");
         // check if email exist
         const sqlselect = `SELECT * FROM user WHERE email = "${email}"`;
-        db.query(sqlselect, [email, password], (err, result) => {
+        db.query(sqlselect, (err, result) => {
             if (err) throw err;
             // if email not found
             if (result.length == 0) {
@@ -54,39 +47,31 @@ app.post("/sign_up", (req, res) => {
                 const sqlInsert = `INSERT INTO user (email, password) VALUES ("${email}", "${password}")`;
                 db.query(sqlInsert, (err, result) => {
                     if (err) throw err;
-                    console.log("1 record inserted");
-                    res.render("index.ejs", { email: req.body.email })
+                    res.send("Email successfully registers");
+                    return;
                 });
-                // email found: show messesage  "email already exist" on home.ejs
             } else {
-                console.log("email already exist!", [email, password]);
+                res.send("Email address has already been registered. Please sign in or use other email");
             }
         });
     });
 });
 
-app.post("/sign_in", (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-    console.log(req.body);
-
-    db.connect(function (err) {
-        if (err) throw err;
-        console.log("Sign_in Connected!");
-        // check if any matched email, then check if the password is matched
-        const sqlselect = `SELECT password FROM user WHERE email= "${email}"`;
-        db.query(sqlselect, function (err, result) {
-            console.log(sqlselect);
-            console.log(result);
-            if (err) throw err;
-            if (result.length == 0) {
-                console.log("No user with that email!");
-            } else if (result[0]["password"] == `${password}`) {
-                console.log("Password matches!")
-                res.render("index.ejs", { email: req.body.email });
-            } else {
-                console.log("Password not matched! Please provide correct password...");
-            };
-        });
+app.post('/sign_in', (req, res) => {
+    const { email, password } = req.body;
+    const getPassword = `SELECT password FROM user WHERE email="${email}"`;
+    db.query(getPassword, (err, result) => {
+        if (err) { throw err; }
+        // check if registered already or not
+        if (result.length == 0) {
+            res.send("No user with the email address was found");
+            return;
+        };
+        const passwordFromDB = result[0].password;
+        if (password == passwordFromDB) {
+            res.send("Login successfully");
+        } else {
+            res.send("Password not matched! Please provide correct password");
+        };
     });
-})
+});

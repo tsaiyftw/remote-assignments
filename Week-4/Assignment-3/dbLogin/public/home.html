@@ -1,0 +1,84 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+</head>
+
+<body>
+    <h1> Home Page </h1>
+
+    <div id="div">
+        <label for="email">Email</label>
+        <input type="email" placeholder="Enter email" id="email" name="email" required>
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" placeholder="Enter password" id="password" name="password" required>
+    </div>
+
+    <button type="button" onclick="signUp();">Sign Up</button>
+    <button type="button" onclick="signIn();">Sign In</button>
+
+    <script>
+        function showResult(result) {
+            console.log(result);
+            const newDiv = document.createElement("div");
+            let newContent = document.createTextNode(result);
+            newDiv.appendChild(newContent);
+            document.body.appendChild(newDiv)
+        };
+
+        function checkInput(email, password) {
+            if (email == "" | password == "") {
+                showResult("You need to enter both email and password");
+                return false;
+            }
+            if (!email.includes('@')) {
+                showResult("Invalid email address!");
+                return false;
+            };
+            return true;
+        };
+
+        function signUp() {
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            if (!checkInput(email, password)) return;
+            const req = new XMLHttpRequest();
+            req.open('POST', '/sign_up', true);
+            req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            req.onload = function () {
+                let  msg = this.responseText
+                if (msg == "Email address has already been registered. Please sign in or use other email"){
+                    showResult(msg)
+                } else {
+                    location.href = "/member";
+                };
+            };
+            req.send(`email=${email}&password=${password}`);
+        };
+
+        function signIn() {
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            if (!checkInput(email, password)) return;
+            const req = new XMLHttpRequest();
+            req.open('POST', '/sign_in', true);
+            req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            req.onload = function () {
+                let  msg = this.responseText
+                if (msg == "Login successfully"){
+                    location.href = "member"
+                } else {
+                    showResult(msg);
+                };
+            };
+            req.send(`email=${email}&password=${password}`);
+        };
+    </script>
+</body>
+
+</html>
