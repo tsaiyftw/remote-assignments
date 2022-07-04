@@ -1,10 +1,9 @@
 function delayedResult(n1, n2, delayTime, callback) {
-    let result = n1 + n2;
+    let sum = n1 + n2;
     setTimeout(() => {
-        console.log(result);
+        callback(sum);
     }, delayTime);
 }
-
 delayedResult(4, 5, 3000, function (result) {
     console.log(result);
 }); // 9 (4+5) will be shown in the console after 3 seconds
