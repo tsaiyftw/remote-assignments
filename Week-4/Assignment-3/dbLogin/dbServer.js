@@ -40,25 +40,21 @@ app.get('/member', (req, res) => {
 
 app.post('/sign_up', (req, res) => {
     const { email, password } = req.body;
-    db.connect((err) => {
+    // check if email exist
+    const sqlselect = `SELECT * FROM user WHERE email = "${email}"`;
+    db.query(sqlselect, (err, result) => {
         if (err) throw err;
-        // check if email exist
-        const sqlselect = `SELECT * FROM user WHERE email = "${email}"`;
-        db.query(sqlselect, (err, result) => {
-            if (err) throw err;
-            // if email not found
-            if (result.length == 0) {
-                // insert into user table
-                const sqlInsert = `INSERT INTO user (email, password) VALUES ("${email}", "${password}")`;
-                db.query(sqlInsert, (err, result) => {
-                    if (err) throw err;
-                    res.send("Email successfully registers");
-                    return;
-                });
-            } else {
-                res.send("Email address has already been registered. Please sign in or use other email");
-            }
-        });
+        // if email not found
+        if (result.length == 0) {
+            // insert into user table
+            const sqlInsert = `INSERT INTO user (email, password) VALUES ("${email}", "${password}")`;
+            db.query(sqlInsert, (err) => {
+                if (err) throw err;
+                res.send("Email successfully registers");
+            });
+        } else {
+            res.send("Email address has already been registered. Please sign in or use other email");
+        };
     });
 });
 
@@ -66,7 +62,7 @@ app.post('/sign_in', (req, res) => {
     const { email, password } = req.body;
     const getPassword = `SELECT password FROM user WHERE email="${email}"`;
     db.query(getPassword, (err, result) => {
-        if (err) { throw err; }
+        if (err) throw err;
         // check if registered already or not
         if (result.length == 0) {
             res.send("No user with the email address was found");
